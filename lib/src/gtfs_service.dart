@@ -93,8 +93,8 @@ class GTFSImportService {
     await _insertTrips(archive, appDatabase);
     await _insertStopTimes(archive, appDatabase);
 
-    await  appDatabase.customStatement('PRAGMA optimize;');
-    await  appDatabase.customStatement('VACUUM;');
+    await appDatabase.customStatement('PRAGMA optimize;');
+    await appDatabase.customStatement('VACUUM;');
   }
 
   Iterable<T> _mapFileRowsToInserts<T>(
@@ -157,8 +157,6 @@ class GTFSImportService {
         );
       },
     );
-
-    print('Agency inserts length ${agencyInserts.length}');
 
     return appDatabase.batch((batch) {
       batch.insertAll(appDatabase.agency, agencyInserts);

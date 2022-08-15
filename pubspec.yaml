@@ -8,7 +8,7 @@ environment:
 
 flutter:
   assets:
-    - assets/sqlite/kaunas.sqlite
+    - assets/sqlite/db.sqlite
 
 dependencies:
   flutter:

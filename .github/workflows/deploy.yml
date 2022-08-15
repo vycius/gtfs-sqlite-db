@@ -1,0 +1,37 @@
+name: Deploy DB files
+
+on:
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+
+concurrency:
+  group: "deploy"
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    concurrency: ci-${{ github.ref }}
+    name: Build and test
+    runs-on: ubuntu-20.04
+    timeout-minutes: 30
+    strategy:
+      matrix:
+        region: [ vilnius, kaunas, klaipeda, panevezys, druskininkai ]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - run: cp db/${matrix.region}.sqlite assets/sqlite/db.sqlite
+
+      - run: git add assets/sqlite/db.sqlite
+      - run: git commit --allow-empty -m "Update sqlite file" || true
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          branch: ${{ matrix.region }}
