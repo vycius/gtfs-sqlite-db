@@ -3,7 +3,7 @@
 part of 'db.dart';
 
 // **************************************************************************
-// MoorGenerator
+// DriftDatabaseGenerator
 // **************************************************************************
 
 // ignore_for_file: type=lint
@@ -13,27 +13,12 @@ class FeedInfoData extends DataClass implements Insertable<FeedInfoData> {
   final String feed_lang;
   final String? default_lang;
   final String? agency_gtfs_realtime_url;
-  FeedInfoData(
+  const FeedInfoData(
       {required this.feed_publisher_name,
       required this.feed_publisher_url,
       required this.feed_lang,
       this.default_lang,
       this.agency_gtfs_realtime_url});
-  factory FeedInfoData.fromData(Map<String, dynamic> data, {String? prefix}) {
-    final effectivePrefix = prefix ?? '';
-    return FeedInfoData(
-      feed_publisher_name: const StringType().mapFromDatabaseResponse(
-          data['${effectivePrefix}feed_publisher_name'])!,
-      feed_publisher_url: const StringType().mapFromDatabaseResponse(
-          data['${effectivePrefix}feed_publisher_url'])!,
-      feed_lang: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}feed_lang'])!,
-      default_lang: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}default_lang']),
-      agency_gtfs_realtime_url: const StringType().mapFromDatabaseResponse(
-          data['${effectivePrefix}agency_gtfs_realtime_url']),
-    );
-  }
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -41,11 +26,11 @@ class FeedInfoData extends DataClass implements Insertable<FeedInfoData> {
     map['feed_publisher_url'] = Variable<String>(feed_publisher_url);
     map['feed_lang'] = Variable<String>(feed_lang);
     if (!nullToAbsent || default_lang != null) {
-      map['default_lang'] = Variable<String?>(default_lang);
+      map['default_lang'] = Variable<String>(default_lang);
     }
     if (!nullToAbsent || agency_gtfs_realtime_url != null) {
       map['agency_gtfs_realtime_url'] =
-          Variable<String?>(agency_gtfs_realtime_url);
+          Variable<String>(agency_gtfs_realtime_url);
     }
     return map;
   }
@@ -95,15 +80,17 @@ class FeedInfoData extends DataClass implements Insertable<FeedInfoData> {
           {String? feed_publisher_name,
           String? feed_publisher_url,
           String? feed_lang,
-          String? default_lang,
-          String? agency_gtfs_realtime_url}) =>
+          Value<String?> default_lang = const Value.absent(),
+          Value<String?> agency_gtfs_realtime_url = const Value.absent()}) =>
       FeedInfoData(
         feed_publisher_name: feed_publisher_name ?? this.feed_publisher_name,
         feed_publisher_url: feed_publisher_url ?? this.feed_publisher_url,
         feed_lang: feed_lang ?? this.feed_lang,
-        default_lang: default_lang ?? this.default_lang,
-        agency_gtfs_realtime_url:
-            agency_gtfs_realtime_url ?? this.agency_gtfs_realtime_url,
+        default_lang:
+            default_lang.present ? default_lang.value : this.default_lang,
+        agency_gtfs_realtime_url: agency_gtfs_realtime_url.present
+            ? agency_gtfs_realtime_url.value
+            : this.agency_gtfs_realtime_url,
       );
   @override
   String toString() {
@@ -157,8 +144,8 @@ class FeedInfoCompanion extends UpdateCompanion<FeedInfoData> {
     Expression<String>? feed_publisher_name,
     Expression<String>? feed_publisher_url,
     Expression<String>? feed_lang,
-    Expression<String?>? default_lang,
-    Expression<String?>? agency_gtfs_realtime_url,
+    Expression<String>? default_lang,
+    Expression<String>? agency_gtfs_realtime_url,
   }) {
     return RawValuesInsertable({
       if (feed_publisher_name != null)
@@ -200,11 +187,11 @@ class FeedInfoCompanion extends UpdateCompanion<FeedInfoData> {
       map['feed_lang'] = Variable<String>(feed_lang.value);
     }
     if (default_lang.present) {
-      map['default_lang'] = Variable<String?>(default_lang.value);
+      map['default_lang'] = Variable<String>(default_lang.value);
     }
     if (agency_gtfs_realtime_url.present) {
       map['agency_gtfs_realtime_url'] =
-          Variable<String?>(agency_gtfs_realtime_url.value);
+          Variable<String>(agency_gtfs_realtime_url.value);
     }
     return map;
   }
@@ -231,32 +218,32 @@ class $FeedInfoTable extends FeedInfo
   final VerificationMeta _feed_publisher_nameMeta =
       const VerificationMeta('feed_publisher_name');
   @override
-  late final GeneratedColumn<String?> feed_publisher_name =
-      GeneratedColumn<String?>('feed_publisher_name', aliasedName, false,
-          type: const StringType(), requiredDuringInsert: true);
+  late final GeneratedColumn<String> feed_publisher_name =
+      GeneratedColumn<String>('feed_publisher_name', aliasedName, false,
+          type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _feed_publisher_urlMeta =
       const VerificationMeta('feed_publisher_url');
   @override
-  late final GeneratedColumn<String?> feed_publisher_url =
-      GeneratedColumn<String?>('feed_publisher_url', aliasedName, false,
-          type: const StringType(), requiredDuringInsert: true);
+  late final GeneratedColumn<String> feed_publisher_url =
+      GeneratedColumn<String>('feed_publisher_url', aliasedName, false,
+          type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _feed_langMeta = const VerificationMeta('feed_lang');
   @override
-  late final GeneratedColumn<String?> feed_lang = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> feed_lang = GeneratedColumn<String>(
       'feed_lang', aliasedName, false,
-      type: const StringType(), requiredDuringInsert: true);
+      type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _default_langMeta =
       const VerificationMeta('default_lang');
   @override
-  late final GeneratedColumn<String?> default_lang = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> default_lang = GeneratedColumn<String>(
       'default_lang', aliasedName, true,
-      type: const StringType(), requiredDuringInsert: false);
+      type: DriftSqlType.string, requiredDuringInsert: false);
   final VerificationMeta _agency_gtfs_realtime_urlMeta =
       const VerificationMeta('agency_gtfs_realtime_url');
   @override
-  late final GeneratedColumn<String?> agency_gtfs_realtime_url =
-      GeneratedColumn<String?>('agency_gtfs_realtime_url', aliasedName, true,
-          type: const StringType(), requiredDuringInsert: false);
+  late final GeneratedColumn<String> agency_gtfs_realtime_url =
+      GeneratedColumn<String>('agency_gtfs_realtime_url', aliasedName, true,
+          type: DriftSqlType.string, requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns => [
         feed_publisher_name,
@@ -316,8 +303,20 @@ class $FeedInfoTable extends FeedInfo
   Set<GeneratedColumn> get $primaryKey => <GeneratedColumn>{};
   @override
   FeedInfoData map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return FeedInfoData.fromData(data,
-        prefix: tablePrefix != null ? '$tablePrefix.' : null);
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return FeedInfoData(
+      feed_publisher_name: attachedDatabase.options.types.read(
+          DriftSqlType.string, data['${effectivePrefix}feed_publisher_name'])!,
+      feed_publisher_url: attachedDatabase.options.types.read(
+          DriftSqlType.string, data['${effectivePrefix}feed_publisher_url'])!,
+      feed_lang: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}feed_lang'])!,
+      default_lang: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}default_lang']),
+      agency_gtfs_realtime_url: attachedDatabase.options.types.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}agency_gtfs_realtime_url']),
+    );
   }
 
   @override
@@ -335,7 +334,7 @@ class AgencyData extends DataClass implements Insertable<AgencyData> {
   final String? agency_phone;
   final String? agency_fare_url;
   final String? agency_email;
-  AgencyData(
+  const AgencyData(
       {required this.agency_id,
       required this.agency_name,
       required this.agency_url,
@@ -344,27 +343,6 @@ class AgencyData extends DataClass implements Insertable<AgencyData> {
       this.agency_phone,
       this.agency_fare_url,
       this.agency_email});
-  factory AgencyData.fromData(Map<String, dynamic> data, {String? prefix}) {
-    final effectivePrefix = prefix ?? '';
-    return AgencyData(
-      agency_id: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}agency_id'])!,
-      agency_name: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}agency_name'])!,
-      agency_url: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}agency_url'])!,
-      agency_timezone: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}agency_timezone'])!,
-      agency_lang: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}agency_lang']),
-      agency_phone: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}agency_phone']),
-      agency_fare_url: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}agency_fare_url']),
-      agency_email: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}agency_email']),
-    );
-  }
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -373,16 +351,16 @@ class AgencyData extends DataClass implements Insertable<AgencyData> {
     map['agency_url'] = Variable<String>(agency_url);
     map['agency_timezone'] = Variable<String>(agency_timezone);
     if (!nullToAbsent || agency_lang != null) {
-      map['agency_lang'] = Variable<String?>(agency_lang);
+      map['agency_lang'] = Variable<String>(agency_lang);
     }
     if (!nullToAbsent || agency_phone != null) {
-      map['agency_phone'] = Variable<String?>(agency_phone);
+      map['agency_phone'] = Variable<String>(agency_phone);
     }
     if (!nullToAbsent || agency_fare_url != null) {
-      map['agency_fare_url'] = Variable<String?>(agency_fare_url);
+      map['agency_fare_url'] = Variable<String>(agency_fare_url);
     }
     if (!nullToAbsent || agency_email != null) {
-      map['agency_email'] = Variable<String?>(agency_email);
+      map['agency_email'] = Variable<String>(agency_email);
     }
     return map;
   }
@@ -442,19 +420,23 @@ class AgencyData extends DataClass implements Insertable<AgencyData> {
           String? agency_name,
           String? agency_url,
           String? agency_timezone,
-          String? agency_lang,
-          String? agency_phone,
-          String? agency_fare_url,
-          String? agency_email}) =>
+          Value<String?> agency_lang = const Value.absent(),
+          Value<String?> agency_phone = const Value.absent(),
+          Value<String?> agency_fare_url = const Value.absent(),
+          Value<String?> agency_email = const Value.absent()}) =>
       AgencyData(
         agency_id: agency_id ?? this.agency_id,
         agency_name: agency_name ?? this.agency_name,
         agency_url: agency_url ?? this.agency_url,
         agency_timezone: agency_timezone ?? this.agency_timezone,
-        agency_lang: agency_lang ?? this.agency_lang,
-        agency_phone: agency_phone ?? this.agency_phone,
-        agency_fare_url: agency_fare_url ?? this.agency_fare_url,
-        agency_email: agency_email ?? this.agency_email,
+        agency_lang: agency_lang.present ? agency_lang.value : this.agency_lang,
+        agency_phone:
+            agency_phone.present ? agency_phone.value : this.agency_phone,
+        agency_fare_url: agency_fare_url.present
+            ? agency_fare_url.value
+            : this.agency_fare_url,
+        agency_email:
+            agency_email.present ? agency_email.value : this.agency_email,
       );
   @override
   String toString() {
@@ -532,10 +514,10 @@ class AgencyCompanion extends UpdateCompanion<AgencyData> {
     Expression<String>? agency_name,
     Expression<String>? agency_url,
     Expression<String>? agency_timezone,
-    Expression<String?>? agency_lang,
-    Expression<String?>? agency_phone,
-    Expression<String?>? agency_fare_url,
-    Expression<String?>? agency_email,
+    Expression<String>? agency_lang,
+    Expression<String>? agency_phone,
+    Expression<String>? agency_fare_url,
+    Expression<String>? agency_email,
   }) {
     return RawValuesInsertable({
       if (agency_id != null) 'agency_id': agency_id,
@@ -586,16 +568,16 @@ class AgencyCompanion extends UpdateCompanion<AgencyData> {
       map['agency_timezone'] = Variable<String>(agency_timezone.value);
     }
     if (agency_lang.present) {
-      map['agency_lang'] = Variable<String?>(agency_lang.value);
+      map['agency_lang'] = Variable<String>(agency_lang.value);
     }
     if (agency_phone.present) {
-      map['agency_phone'] = Variable<String?>(agency_phone.value);
+      map['agency_phone'] = Variable<String>(agency_phone.value);
     }
     if (agency_fare_url.present) {
-      map['agency_fare_url'] = Variable<String?>(agency_fare_url.value);
+      map['agency_fare_url'] = Variable<String>(agency_fare_url.value);
     }
     if (agency_email.present) {
-      map['agency_email'] = Variable<String?>(agency_email.value);
+      map['agency_email'] = Variable<String>(agency_email.value);
     }
     return map;
   }
@@ -623,50 +605,50 @@ class $AgencyTable extends Agency with TableInfo<$AgencyTable, AgencyData> {
   $AgencyTable(this.attachedDatabase, [this._alias]);
   final VerificationMeta _agency_idMeta = const VerificationMeta('agency_id');
   @override
-  late final GeneratedColumn<String?> agency_id = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> agency_id = GeneratedColumn<String>(
       'agency_id', aliasedName, false,
-      type: const StringType(), requiredDuringInsert: true);
+      type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _agency_nameMeta =
       const VerificationMeta('agency_name');
   @override
-  late final GeneratedColumn<String?> agency_name = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> agency_name = GeneratedColumn<String>(
       'agency_name', aliasedName, false,
-      type: const StringType(), requiredDuringInsert: true);
+      type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _agency_urlMeta = const VerificationMeta('agency_url');
   @override
-  late final GeneratedColumn<String?> agency_url = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> agency_url = GeneratedColumn<String>(
       'agency_url', aliasedName, false,
-      type: const StringType(), requiredDuringInsert: true);
+      type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _agency_timezoneMeta =
       const VerificationMeta('agency_timezone');
   @override
-  late final GeneratedColumn<String?> agency_timezone =
-      GeneratedColumn<String?>('agency_timezone', aliasedName, false,
-          type: const StringType(), requiredDuringInsert: true);
+  late final GeneratedColumn<String> agency_timezone = GeneratedColumn<String>(
+      'agency_timezone', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _agency_langMeta =
       const VerificationMeta('agency_lang');
   @override
-  late final GeneratedColumn<String?> agency_lang = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> agency_lang = GeneratedColumn<String>(
       'agency_lang', aliasedName, true,
-      type: const StringType(), requiredDuringInsert: false);
+      type: DriftSqlType.string, requiredDuringInsert: false);
   final VerificationMeta _agency_phoneMeta =
       const VerificationMeta('agency_phone');
   @override
-  late final GeneratedColumn<String?> agency_phone = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> agency_phone = GeneratedColumn<String>(
       'agency_phone', aliasedName, true,
-      type: const StringType(), requiredDuringInsert: false);
+      type: DriftSqlType.string, requiredDuringInsert: false);
   final VerificationMeta _agency_fare_urlMeta =
       const VerificationMeta('agency_fare_url');
   @override
-  late final GeneratedColumn<String?> agency_fare_url =
-      GeneratedColumn<String?>('agency_fare_url', aliasedName, true,
-          type: const StringType(), requiredDuringInsert: false);
+  late final GeneratedColumn<String> agency_fare_url = GeneratedColumn<String>(
+      'agency_fare_url', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   final VerificationMeta _agency_emailMeta =
       const VerificationMeta('agency_email');
   @override
-  late final GeneratedColumn<String?> agency_email = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> agency_email = GeneratedColumn<String>(
       'agency_email', aliasedName, true,
-      type: const StringType(), requiredDuringInsert: false);
+      type: DriftSqlType.string, requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns => [
         agency_id,
@@ -748,8 +730,25 @@ class $AgencyTable extends Agency with TableInfo<$AgencyTable, AgencyData> {
   Set<GeneratedColumn> get $primaryKey => {agency_id};
   @override
   AgencyData map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return AgencyData.fromData(data,
-        prefix: tablePrefix != null ? '$tablePrefix.' : null);
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AgencyData(
+      agency_id: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}agency_id'])!,
+      agency_name: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}agency_name'])!,
+      agency_url: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}agency_url'])!,
+      agency_timezone: attachedDatabase.options.types.read(
+          DriftSqlType.string, data['${effectivePrefix}agency_timezone'])!,
+      agency_lang: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}agency_lang']),
+      agency_phone: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}agency_phone']),
+      agency_fare_url: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}agency_fare_url']),
+      agency_email: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}agency_email']),
+    );
   }
 
   @override
@@ -773,7 +772,7 @@ class Stop extends DataClass implements Insertable<Stop> {
   final int? wheelchair_boarding;
   final String? level_id;
   final String? platform_code;
-  Stop(
+  const Stop(
       {required this.stop_id,
       this.stop_code,
       required this.stop_name,
@@ -788,75 +787,42 @@ class Stop extends DataClass implements Insertable<Stop> {
       this.wheelchair_boarding,
       this.level_id,
       this.platform_code});
-  factory Stop.fromData(Map<String, dynamic> data, {String? prefix}) {
-    final effectivePrefix = prefix ?? '';
-    return Stop(
-      stop_id: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}stop_id'])!,
-      stop_code: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}stop_code']),
-      stop_name: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}stop_name'])!,
-      stop_desc: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}stop_desc']),
-      stop_lat: const RealType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}stop_lat'])!,
-      stop_lon: const RealType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}stop_lon'])!,
-      zone_id: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}zone_id']),
-      stop_url: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}stop_url']),
-      location_type: const IntType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}location_type']),
-      parent_station: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}parent_station']),
-      stop_timezone: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}stop_timezone']),
-      wheelchair_boarding: const IntType().mapFromDatabaseResponse(
-          data['${effectivePrefix}wheelchair_boarding']),
-      level_id: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}level_id']),
-      platform_code: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}platform_code']),
-    );
-  }
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['stop_id'] = Variable<String>(stop_id);
     if (!nullToAbsent || stop_code != null) {
-      map['stop_code'] = Variable<String?>(stop_code);
+      map['stop_code'] = Variable<String>(stop_code);
     }
     map['stop_name'] = Variable<String>(stop_name);
     if (!nullToAbsent || stop_desc != null) {
-      map['stop_desc'] = Variable<String?>(stop_desc);
+      map['stop_desc'] = Variable<String>(stop_desc);
     }
     map['stop_lat'] = Variable<double>(stop_lat);
     map['stop_lon'] = Variable<double>(stop_lon);
     if (!nullToAbsent || zone_id != null) {
-      map['zone_id'] = Variable<String?>(zone_id);
+      map['zone_id'] = Variable<String>(zone_id);
     }
     if (!nullToAbsent || stop_url != null) {
-      map['stop_url'] = Variable<String?>(stop_url);
+      map['stop_url'] = Variable<String>(stop_url);
     }
     if (!nullToAbsent || location_type != null) {
-      map['location_type'] = Variable<int?>(location_type);
+      map['location_type'] = Variable<int>(location_type);
     }
     if (!nullToAbsent || parent_station != null) {
-      map['parent_station'] = Variable<String?>(parent_station);
+      map['parent_station'] = Variable<String>(parent_station);
     }
     if (!nullToAbsent || stop_timezone != null) {
-      map['stop_timezone'] = Variable<String?>(stop_timezone);
+      map['stop_timezone'] = Variable<String>(stop_timezone);
     }
     if (!nullToAbsent || wheelchair_boarding != null) {
-      map['wheelchair_boarding'] = Variable<int?>(wheelchair_boarding);
+      map['wheelchair_boarding'] = Variable<int>(wheelchair_boarding);
     }
     if (!nullToAbsent || level_id != null) {
-      map['level_id'] = Variable<String?>(level_id);
+      map['level_id'] = Variable<String>(level_id);
     }
     if (!nullToAbsent || platform_code != null) {
-      map['platform_code'] = Variable<String?>(platform_code);
+      map['platform_code'] = Variable<String>(platform_code);
     }
     return map;
   }
@@ -944,34 +910,40 @@ class Stop extends DataClass implements Insertable<Stop> {
 
   Stop copyWith(
           {String? stop_id,
-          String? stop_code,
+          Value<String?> stop_code = const Value.absent(),
           String? stop_name,
-          String? stop_desc,
+          Value<String?> stop_desc = const Value.absent(),
           double? stop_lat,
           double? stop_lon,
-          String? zone_id,
-          String? stop_url,
-          int? location_type,
-          String? parent_station,
-          String? stop_timezone,
-          int? wheelchair_boarding,
-          String? level_id,
-          String? platform_code}) =>
+          Value<String?> zone_id = const Value.absent(),
+          Value<String?> stop_url = const Value.absent(),
+          Value<int?> location_type = const Value.absent(),
+          Value<String?> parent_station = const Value.absent(),
+          Value<String?> stop_timezone = const Value.absent(),
+          Value<int?> wheelchair_boarding = const Value.absent(),
+          Value<String?> level_id = const Value.absent(),
+          Value<String?> platform_code = const Value.absent()}) =>
       Stop(
         stop_id: stop_id ?? this.stop_id,
-        stop_code: stop_code ?? this.stop_code,
+        stop_code: stop_code.present ? stop_code.value : this.stop_code,
         stop_name: stop_name ?? this.stop_name,
-        stop_desc: stop_desc ?? this.stop_desc,
+        stop_desc: stop_desc.present ? stop_desc.value : this.stop_desc,
         stop_lat: stop_lat ?? this.stop_lat,
         stop_lon: stop_lon ?? this.stop_lon,
-        zone_id: zone_id ?? this.zone_id,
-        stop_url: stop_url ?? this.stop_url,
-        location_type: location_type ?? this.location_type,
-        parent_station: parent_station ?? this.parent_station,
-        stop_timezone: stop_timezone ?? this.stop_timezone,
-        wheelchair_boarding: wheelchair_boarding ?? this.wheelchair_boarding,
-        level_id: level_id ?? this.level_id,
-        platform_code: platform_code ?? this.platform_code,
+        zone_id: zone_id.present ? zone_id.value : this.zone_id,
+        stop_url: stop_url.present ? stop_url.value : this.stop_url,
+        location_type:
+            location_type.present ? location_type.value : this.location_type,
+        parent_station:
+            parent_station.present ? parent_station.value : this.parent_station,
+        stop_timezone:
+            stop_timezone.present ? stop_timezone.value : this.stop_timezone,
+        wheelchair_boarding: wheelchair_boarding.present
+            ? wheelchair_boarding.value
+            : this.wheelchair_boarding,
+        level_id: level_id.present ? level_id.value : this.level_id,
+        platform_code:
+            platform_code.present ? platform_code.value : this.platform_code,
       );
   @override
   String toString() {
@@ -1082,19 +1054,19 @@ class StopsCompanion extends UpdateCompanion<Stop> {
         stop_lon = Value(stop_lon);
   static Insertable<Stop> custom({
     Expression<String>? stop_id,
-    Expression<String?>? stop_code,
+    Expression<String>? stop_code,
     Expression<String>? stop_name,
-    Expression<String?>? stop_desc,
+    Expression<String>? stop_desc,
     Expression<double>? stop_lat,
     Expression<double>? stop_lon,
-    Expression<String?>? zone_id,
-    Expression<String?>? stop_url,
-    Expression<int?>? location_type,
-    Expression<String?>? parent_station,
-    Expression<String?>? stop_timezone,
-    Expression<int?>? wheelchair_boarding,
-    Expression<String?>? level_id,
-    Expression<String?>? platform_code,
+    Expression<String>? zone_id,
+    Expression<String>? stop_url,
+    Expression<int>? location_type,
+    Expression<String>? parent_station,
+    Expression<String>? stop_timezone,
+    Expression<int>? wheelchair_boarding,
+    Expression<String>? level_id,
+    Expression<String>? platform_code,
   }) {
     return RawValuesInsertable({
       if (stop_id != null) 'stop_id': stop_id,
@@ -1155,13 +1127,13 @@ class StopsCompanion extends UpdateCompanion<Stop> {
       map['stop_id'] = Variable<String>(stop_id.value);
     }
     if (stop_code.present) {
-      map['stop_code'] = Variable<String?>(stop_code.value);
+      map['stop_code'] = Variable<String>(stop_code.value);
     }
     if (stop_name.present) {
       map['stop_name'] = Variable<String>(stop_name.value);
     }
     if (stop_desc.present) {
-      map['stop_desc'] = Variable<String?>(stop_desc.value);
+      map['stop_desc'] = Variable<String>(stop_desc.value);
     }
     if (stop_lat.present) {
       map['stop_lat'] = Variable<double>(stop_lat.value);
@@ -1170,28 +1142,28 @@ class StopsCompanion extends UpdateCompanion<Stop> {
       map['stop_lon'] = Variable<double>(stop_lon.value);
     }
     if (zone_id.present) {
-      map['zone_id'] = Variable<String?>(zone_id.value);
+      map['zone_id'] = Variable<String>(zone_id.value);
     }
     if (stop_url.present) {
-      map['stop_url'] = Variable<String?>(stop_url.value);
+      map['stop_url'] = Variable<String>(stop_url.value);
     }
     if (location_type.present) {
-      map['location_type'] = Variable<int?>(location_type.value);
+      map['location_type'] = Variable<int>(location_type.value);
     }
     if (parent_station.present) {
-      map['parent_station'] = Variable<String?>(parent_station.value);
+      map['parent_station'] = Variable<String>(parent_station.value);
     }
     if (stop_timezone.present) {
-      map['stop_timezone'] = Variable<String?>(stop_timezone.value);
+      map['stop_timezone'] = Variable<String>(stop_timezone.value);
     }
     if (wheelchair_boarding.present) {
-      map['wheelchair_boarding'] = Variable<int?>(wheelchair_boarding.value);
+      map['wheelchair_boarding'] = Variable<int>(wheelchair_boarding.value);
     }
     if (level_id.present) {
-      map['level_id'] = Variable<String?>(level_id.value);
+      map['level_id'] = Variable<String>(level_id.value);
     }
     if (platform_code.present) {
-      map['platform_code'] = Variable<String?>(platform_code.value);
+      map['platform_code'] = Variable<String>(platform_code.value);
     }
     return map;
   }
@@ -1225,79 +1197,79 @@ class $StopsTable extends Stops with TableInfo<$StopsTable, Stop> {
   $StopsTable(this.attachedDatabase, [this._alias]);
   final VerificationMeta _stop_idMeta = const VerificationMeta('stop_id');
   @override
-  late final GeneratedColumn<String?> stop_id = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> stop_id = GeneratedColumn<String>(
       'stop_id', aliasedName, false,
-      type: const StringType(), requiredDuringInsert: true);
+      type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _stop_codeMeta = const VerificationMeta('stop_code');
   @override
-  late final GeneratedColumn<String?> stop_code = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> stop_code = GeneratedColumn<String>(
       'stop_code', aliasedName, true,
-      type: const StringType(), requiredDuringInsert: false);
+      type: DriftSqlType.string, requiredDuringInsert: false);
   final VerificationMeta _stop_nameMeta = const VerificationMeta('stop_name');
   @override
-  late final GeneratedColumn<String?> stop_name = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> stop_name = GeneratedColumn<String>(
       'stop_name', aliasedName, false,
-      type: const StringType(), requiredDuringInsert: true);
+      type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _stop_descMeta = const VerificationMeta('stop_desc');
   @override
-  late final GeneratedColumn<String?> stop_desc = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> stop_desc = GeneratedColumn<String>(
       'stop_desc', aliasedName, true,
-      type: const StringType(), requiredDuringInsert: false);
+      type: DriftSqlType.string, requiredDuringInsert: false);
   final VerificationMeta _stop_latMeta = const VerificationMeta('stop_lat');
   @override
-  late final GeneratedColumn<double?> stop_lat = GeneratedColumn<double?>(
+  late final GeneratedColumn<double> stop_lat = GeneratedColumn<double>(
       'stop_lat', aliasedName, false,
-      type: const RealType(), requiredDuringInsert: true);
+      type: DriftSqlType.double, requiredDuringInsert: true);
   final VerificationMeta _stop_lonMeta = const VerificationMeta('stop_lon');
   @override
-  late final GeneratedColumn<double?> stop_lon = GeneratedColumn<double?>(
+  late final GeneratedColumn<double> stop_lon = GeneratedColumn<double>(
       'stop_lon', aliasedName, false,
-      type: const RealType(), requiredDuringInsert: true);
+      type: DriftSqlType.double, requiredDuringInsert: true);
   final VerificationMeta _zone_idMeta = const VerificationMeta('zone_id');
   @override
-  late final GeneratedColumn<String?> zone_id = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> zone_id = GeneratedColumn<String>(
       'zone_id', aliasedName, true,
-      type: const StringType(), requiredDuringInsert: false);
+      type: DriftSqlType.string, requiredDuringInsert: false);
   final VerificationMeta _stop_urlMeta = const VerificationMeta('stop_url');
   @override
-  late final GeneratedColumn<String?> stop_url = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> stop_url = GeneratedColumn<String>(
       'stop_url', aliasedName, true,
-      type: const StringType(), requiredDuringInsert: false);
+      type: DriftSqlType.string, requiredDuringInsert: false);
   final VerificationMeta _location_typeMeta =
       const VerificationMeta('location_type');
   @override
-  late final GeneratedColumn<int?> location_type = GeneratedColumn<int?>(
+  late final GeneratedColumn<int> location_type = GeneratedColumn<int>(
       'location_type', aliasedName, true,
-      type: const IntType(), requiredDuringInsert: false);
+      type: DriftSqlType.int, requiredDuringInsert: false);
   final VerificationMeta _parent_stationMeta =
       const VerificationMeta('parent_station');
   @override
-  late final GeneratedColumn<String?> parent_station = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> parent_station = GeneratedColumn<String>(
       'parent_station', aliasedName, true,
-      type: const StringType(), requiredDuringInsert: false);
+      type: DriftSqlType.string, requiredDuringInsert: false);
   final VerificationMeta _stop_timezoneMeta =
       const VerificationMeta('stop_timezone');
   @override
-  late final GeneratedColumn<String?> stop_timezone = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> stop_timezone = GeneratedColumn<String>(
       'stop_timezone', aliasedName, true,
-      type: const StringType(), requiredDuringInsert: false);
+      type: DriftSqlType.string, requiredDuringInsert: false);
   final VerificationMeta _wheelchair_boardingMeta =
       const VerificationMeta('wheelchair_boarding');
   @override
-  late final GeneratedColumn<int?> wheelchair_boarding = GeneratedColumn<int?>(
+  late final GeneratedColumn<int> wheelchair_boarding = GeneratedColumn<int>(
       'wheelchair_boarding', aliasedName, true,
-      type: const IntType(), requiredDuringInsert: false);
+      type: DriftSqlType.int, requiredDuringInsert: false);
   final VerificationMeta _level_idMeta = const VerificationMeta('level_id');
   @override
-  late final GeneratedColumn<String?> level_id = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> level_id = GeneratedColumn<String>(
       'level_id', aliasedName, true,
-      type: const StringType(), requiredDuringInsert: false);
+      type: DriftSqlType.string, requiredDuringInsert: false);
   final VerificationMeta _platform_codeMeta =
       const VerificationMeta('platform_code');
   @override
-  late final GeneratedColumn<String?> platform_code = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> platform_code = GeneratedColumn<String>(
       'platform_code', aliasedName, true,
-      type: const StringType(), requiredDuringInsert: false);
+      type: DriftSqlType.string, requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns => [
         stop_id,
@@ -1405,8 +1377,37 @@ class $StopsTable extends Stops with TableInfo<$StopsTable, Stop> {
   Set<GeneratedColumn> get $primaryKey => {stop_id};
   @override
   Stop map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return Stop.fromData(data,
-        prefix: tablePrefix != null ? '$tablePrefix.' : null);
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Stop(
+      stop_id: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}stop_id'])!,
+      stop_code: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}stop_code']),
+      stop_name: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}stop_name'])!,
+      stop_desc: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}stop_desc']),
+      stop_lat: attachedDatabase.options.types
+          .read(DriftSqlType.double, data['${effectivePrefix}stop_lat'])!,
+      stop_lon: attachedDatabase.options.types
+          .read(DriftSqlType.double, data['${effectivePrefix}stop_lon'])!,
+      zone_id: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}zone_id']),
+      stop_url: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}stop_url']),
+      location_type: attachedDatabase.options.types
+          .read(DriftSqlType.int, data['${effectivePrefix}location_type']),
+      parent_station: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}parent_station']),
+      stop_timezone: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}stop_timezone']),
+      wheelchair_boarding: attachedDatabase.options.types.read(
+          DriftSqlType.int, data['${effectivePrefix}wheelchair_boarding']),
+      level_id: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}level_id']),
+      platform_code: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}platform_code']),
+    );
   }
 
   @override
@@ -1426,7 +1427,7 @@ class TransitRoute extends DataClass implements Insertable<TransitRoute> {
   final String? route_color;
   final String? route_text_color;
   final int? route_sort_order;
-  TransitRoute(
+  const TransitRoute(
       {required this.route_id,
       this.agency_id,
       this.route_short_name,
@@ -1437,57 +1438,32 @@ class TransitRoute extends DataClass implements Insertable<TransitRoute> {
       this.route_color,
       this.route_text_color,
       this.route_sort_order});
-  factory TransitRoute.fromData(Map<String, dynamic> data, {String? prefix}) {
-    final effectivePrefix = prefix ?? '';
-    return TransitRoute(
-      route_id: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}route_id'])!,
-      agency_id: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}agency_id']),
-      route_short_name: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}route_short_name']),
-      route_long_name: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}route_long_name'])!,
-      route_desc: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}route_desc']),
-      route_type: const IntType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}route_type'])!,
-      route_url: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}route_url']),
-      route_color: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}route_color']),
-      route_text_color: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}route_text_color']),
-      route_sort_order: const IntType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}route_sort_order']),
-    );
-  }
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['route_id'] = Variable<String>(route_id);
     if (!nullToAbsent || agency_id != null) {
-      map['agency_id'] = Variable<String?>(agency_id);
+      map['agency_id'] = Variable<String>(agency_id);
     }
     if (!nullToAbsent || route_short_name != null) {
-      map['route_short_name'] = Variable<String?>(route_short_name);
+      map['route_short_name'] = Variable<String>(route_short_name);
     }
     map['route_long_name'] = Variable<String>(route_long_name);
     if (!nullToAbsent || route_desc != null) {
-      map['route_desc'] = Variable<String?>(route_desc);
+      map['route_desc'] = Variable<String>(route_desc);
     }
     map['route_type'] = Variable<int>(route_type);
     if (!nullToAbsent || route_url != null) {
-      map['route_url'] = Variable<String?>(route_url);
+      map['route_url'] = Variable<String>(route_url);
     }
     if (!nullToAbsent || route_color != null) {
-      map['route_color'] = Variable<String?>(route_color);
+      map['route_color'] = Variable<String>(route_color);
     }
     if (!nullToAbsent || route_text_color != null) {
-      map['route_text_color'] = Variable<String?>(route_text_color);
+      map['route_text_color'] = Variable<String>(route_text_color);
     }
     if (!nullToAbsent || route_sort_order != null) {
-      map['route_sort_order'] = Variable<int?>(route_sort_order);
+      map['route_sort_order'] = Variable<int>(route_sort_order);
     }
     return map;
   }
@@ -1556,26 +1532,32 @@ class TransitRoute extends DataClass implements Insertable<TransitRoute> {
 
   TransitRoute copyWith(
           {String? route_id,
-          String? agency_id,
-          String? route_short_name,
+          Value<String?> agency_id = const Value.absent(),
+          Value<String?> route_short_name = const Value.absent(),
           String? route_long_name,
-          String? route_desc,
+          Value<String?> route_desc = const Value.absent(),
           int? route_type,
-          String? route_url,
-          String? route_color,
-          String? route_text_color,
-          int? route_sort_order}) =>
+          Value<String?> route_url = const Value.absent(),
+          Value<String?> route_color = const Value.absent(),
+          Value<String?> route_text_color = const Value.absent(),
+          Value<int?> route_sort_order = const Value.absent()}) =>
       TransitRoute(
         route_id: route_id ?? this.route_id,
-        agency_id: agency_id ?? this.agency_id,
-        route_short_name: route_short_name ?? this.route_short_name,
+        agency_id: agency_id.present ? agency_id.value : this.agency_id,
+        route_short_name: route_short_name.present
+            ? route_short_name.value
+            : this.route_short_name,
         route_long_name: route_long_name ?? this.route_long_name,
-        route_desc: route_desc ?? this.route_desc,
+        route_desc: route_desc.present ? route_desc.value : this.route_desc,
         route_type: route_type ?? this.route_type,
-        route_url: route_url ?? this.route_url,
-        route_color: route_color ?? this.route_color,
-        route_text_color: route_text_color ?? this.route_text_color,
-        route_sort_order: route_sort_order ?? this.route_sort_order,
+        route_url: route_url.present ? route_url.value : this.route_url,
+        route_color: route_color.present ? route_color.value : this.route_color,
+        route_text_color: route_text_color.present
+            ? route_text_color.value
+            : this.route_text_color,
+        route_sort_order: route_sort_order.present
+            ? route_sort_order.value
+            : this.route_sort_order,
       );
   @override
   String toString() {
@@ -1661,15 +1643,15 @@ class TransitRoutesCompanion extends UpdateCompanion<TransitRoute> {
         route_type = Value(route_type);
   static Insertable<TransitRoute> custom({
     Expression<String>? route_id,
-    Expression<String?>? agency_id,
-    Expression<String?>? route_short_name,
+    Expression<String>? agency_id,
+    Expression<String>? route_short_name,
     Expression<String>? route_long_name,
-    Expression<String?>? route_desc,
+    Expression<String>? route_desc,
     Expression<int>? route_type,
-    Expression<String?>? route_url,
-    Expression<String?>? route_color,
-    Expression<String?>? route_text_color,
-    Expression<int?>? route_sort_order,
+    Expression<String>? route_url,
+    Expression<String>? route_color,
+    Expression<String>? route_text_color,
+    Expression<int>? route_sort_order,
   }) {
     return RawValuesInsertable({
       if (route_id != null) 'route_id': route_id,
@@ -1717,31 +1699,31 @@ class TransitRoutesCompanion extends UpdateCompanion<TransitRoute> {
       map['route_id'] = Variable<String>(route_id.value);
     }
     if (agency_id.present) {
-      map['agency_id'] = Variable<String?>(agency_id.value);
+      map['agency_id'] = Variable<String>(agency_id.value);
     }
     if (route_short_name.present) {
-      map['route_short_name'] = Variable<String?>(route_short_name.value);
+      map['route_short_name'] = Variable<String>(route_short_name.value);
     }
     if (route_long_name.present) {
       map['route_long_name'] = Variable<String>(route_long_name.value);
     }
     if (route_desc.present) {
-      map['route_desc'] = Variable<String?>(route_desc.value);
+      map['route_desc'] = Variable<String>(route_desc.value);
     }
     if (route_type.present) {
       map['route_type'] = Variable<int>(route_type.value);
     }
     if (route_url.present) {
-      map['route_url'] = Variable<String?>(route_url.value);
+      map['route_url'] = Variable<String>(route_url.value);
     }
     if (route_color.present) {
-      map['route_color'] = Variable<String?>(route_color.value);
+      map['route_color'] = Variable<String>(route_color.value);
     }
     if (route_text_color.present) {
-      map['route_text_color'] = Variable<String?>(route_text_color.value);
+      map['route_text_color'] = Variable<String>(route_text_color.value);
     }
     if (route_sort_order.present) {
-      map['route_sort_order'] = Variable<int?>(route_sort_order.value);
+      map['route_sort_order'] = Variable<int>(route_sort_order.value);
     }
     return map;
   }
@@ -1772,61 +1754,61 @@ class $TransitRoutesTable extends TransitRoutes
   $TransitRoutesTable(this.attachedDatabase, [this._alias]);
   final VerificationMeta _route_idMeta = const VerificationMeta('route_id');
   @override
-  late final GeneratedColumn<String?> route_id = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> route_id = GeneratedColumn<String>(
       'route_id', aliasedName, false,
-      type: const StringType(), requiredDuringInsert: true);
+      type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _agency_idMeta = const VerificationMeta('agency_id');
   @override
-  late final GeneratedColumn<String?> agency_id = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> agency_id = GeneratedColumn<String>(
       'agency_id', aliasedName, true,
-      type: const StringType(),
+      type: DriftSqlType.string,
       requiredDuringInsert: false,
       defaultConstraints: 'REFERENCES agency (agency_id)');
   final VerificationMeta _route_short_nameMeta =
       const VerificationMeta('route_short_name');
   @override
-  late final GeneratedColumn<String?> route_short_name =
-      GeneratedColumn<String?>('route_short_name', aliasedName, true,
-          type: const StringType(), requiredDuringInsert: false);
+  late final GeneratedColumn<String> route_short_name = GeneratedColumn<String>(
+      'route_short_name', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   final VerificationMeta _route_long_nameMeta =
       const VerificationMeta('route_long_name');
   @override
-  late final GeneratedColumn<String?> route_long_name =
-      GeneratedColumn<String?>('route_long_name', aliasedName, false,
-          type: const StringType(), requiredDuringInsert: true);
+  late final GeneratedColumn<String> route_long_name = GeneratedColumn<String>(
+      'route_long_name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _route_descMeta = const VerificationMeta('route_desc');
   @override
-  late final GeneratedColumn<String?> route_desc = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> route_desc = GeneratedColumn<String>(
       'route_desc', aliasedName, true,
-      type: const StringType(), requiredDuringInsert: false);
+      type: DriftSqlType.string, requiredDuringInsert: false);
   final VerificationMeta _route_typeMeta = const VerificationMeta('route_type');
   @override
-  late final GeneratedColumn<int?> route_type = GeneratedColumn<int?>(
+  late final GeneratedColumn<int> route_type = GeneratedColumn<int>(
       'route_type', aliasedName, false,
-      type: const IntType(), requiredDuringInsert: true);
+      type: DriftSqlType.int, requiredDuringInsert: true);
   final VerificationMeta _route_urlMeta = const VerificationMeta('route_url');
   @override
-  late final GeneratedColumn<String?> route_url = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> route_url = GeneratedColumn<String>(
       'route_url', aliasedName, true,
-      type: const StringType(), requiredDuringInsert: false);
+      type: DriftSqlType.string, requiredDuringInsert: false);
   final VerificationMeta _route_colorMeta =
       const VerificationMeta('route_color');
   @override
-  late final GeneratedColumn<String?> route_color = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> route_color = GeneratedColumn<String>(
       'route_color', aliasedName, true,
-      type: const StringType(), requiredDuringInsert: false);
+      type: DriftSqlType.string, requiredDuringInsert: false);
   final VerificationMeta _route_text_colorMeta =
       const VerificationMeta('route_text_color');
   @override
-  late final GeneratedColumn<String?> route_text_color =
-      GeneratedColumn<String?>('route_text_color', aliasedName, true,
-          type: const StringType(), requiredDuringInsert: false);
+  late final GeneratedColumn<String> route_text_color = GeneratedColumn<String>(
+      'route_text_color', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   final VerificationMeta _route_sort_orderMeta =
       const VerificationMeta('route_sort_order');
   @override
-  late final GeneratedColumn<int?> route_sort_order = GeneratedColumn<int?>(
+  late final GeneratedColumn<int> route_sort_order = GeneratedColumn<int>(
       'route_sort_order', aliasedName, true,
-      type: const IntType(), requiredDuringInsert: false);
+      type: DriftSqlType.int, requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns => [
         route_id,
@@ -1916,8 +1898,29 @@ class $TransitRoutesTable extends TransitRoutes
   Set<GeneratedColumn> get $primaryKey => {route_id};
   @override
   TransitRoute map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return TransitRoute.fromData(data,
-        prefix: tablePrefix != null ? '$tablePrefix.' : null);
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TransitRoute(
+      route_id: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}route_id'])!,
+      agency_id: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}agency_id']),
+      route_short_name: attachedDatabase.options.types.read(
+          DriftSqlType.string, data['${effectivePrefix}route_short_name']),
+      route_long_name: attachedDatabase.options.types.read(
+          DriftSqlType.string, data['${effectivePrefix}route_long_name'])!,
+      route_desc: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}route_desc']),
+      route_type: attachedDatabase.options.types
+          .read(DriftSqlType.int, data['${effectivePrefix}route_type'])!,
+      route_url: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}route_url']),
+      route_color: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}route_color']),
+      route_text_color: attachedDatabase.options.types.read(
+          DriftSqlType.string, data['${effectivePrefix}route_text_color']),
+      route_sort_order: attachedDatabase.options.types
+          .read(DriftSqlType.int, data['${effectivePrefix}route_sort_order']),
+    );
   }
 
   @override
@@ -1937,7 +1940,7 @@ class CalendarData extends DataClass implements Insertable<CalendarData> {
   final bool sunday;
   final String start_date;
   final String end_date;
-  CalendarData(
+  const CalendarData(
       {required this.service_id,
       required this.monday,
       required this.tuesday,
@@ -1948,31 +1951,6 @@ class CalendarData extends DataClass implements Insertable<CalendarData> {
       required this.sunday,
       required this.start_date,
       required this.end_date});
-  factory CalendarData.fromData(Map<String, dynamic> data, {String? prefix}) {
-    final effectivePrefix = prefix ?? '';
-    return CalendarData(
-      service_id: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}service_id'])!,
-      monday: const BoolType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}monday'])!,
-      tuesday: const BoolType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}tuesday'])!,
-      wednesday: const BoolType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}wednesday'])!,
-      thursday: const BoolType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}thursday'])!,
-      friday: const BoolType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}friday'])!,
-      saturday: const BoolType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}saturday'])!,
-      sunday: const BoolType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}sunday'])!,
-      start_date: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}start_date'])!,
-      end_date: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}end_date'])!,
-    );
-  }
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -2253,68 +2231,68 @@ class $CalendarTable extends Calendar
   $CalendarTable(this.attachedDatabase, [this._alias]);
   final VerificationMeta _service_idMeta = const VerificationMeta('service_id');
   @override
-  late final GeneratedColumn<String?> service_id = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> service_id = GeneratedColumn<String>(
       'service_id', aliasedName, false,
-      type: const StringType(), requiredDuringInsert: true);
+      type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _mondayMeta = const VerificationMeta('monday');
   @override
-  late final GeneratedColumn<bool?> monday = GeneratedColumn<bool?>(
+  late final GeneratedColumn<bool> monday = GeneratedColumn<bool>(
       'monday', aliasedName, false,
-      type: const BoolType(),
+      type: DriftSqlType.bool,
       requiredDuringInsert: true,
       defaultConstraints: 'CHECK (monday IN (0, 1))');
   final VerificationMeta _tuesdayMeta = const VerificationMeta('tuesday');
   @override
-  late final GeneratedColumn<bool?> tuesday = GeneratedColumn<bool?>(
+  late final GeneratedColumn<bool> tuesday = GeneratedColumn<bool>(
       'tuesday', aliasedName, false,
-      type: const BoolType(),
+      type: DriftSqlType.bool,
       requiredDuringInsert: true,
       defaultConstraints: 'CHECK (tuesday IN (0, 1))');
   final VerificationMeta _wednesdayMeta = const VerificationMeta('wednesday');
   @override
-  late final GeneratedColumn<bool?> wednesday = GeneratedColumn<bool?>(
+  late final GeneratedColumn<bool> wednesday = GeneratedColumn<bool>(
       'wednesday', aliasedName, false,
-      type: const BoolType(),
+      type: DriftSqlType.bool,
       requiredDuringInsert: true,
       defaultConstraints: 'CHECK (wednesday IN (0, 1))');
   final VerificationMeta _thursdayMeta = const VerificationMeta('thursday');
   @override
-  late final GeneratedColumn<bool?> thursday = GeneratedColumn<bool?>(
+  late final GeneratedColumn<bool> thursday = GeneratedColumn<bool>(
       'thursday', aliasedName, false,
-      type: const BoolType(),
+      type: DriftSqlType.bool,
       requiredDuringInsert: true,
       defaultConstraints: 'CHECK (thursday IN (0, 1))');
   final VerificationMeta _fridayMeta = const VerificationMeta('friday');
   @override
-  late final GeneratedColumn<bool?> friday = GeneratedColumn<bool?>(
+  late final GeneratedColumn<bool> friday = GeneratedColumn<bool>(
       'friday', aliasedName, false,
-      type: const BoolType(),
+      type: DriftSqlType.bool,
       requiredDuringInsert: true,
       defaultConstraints: 'CHECK (friday IN (0, 1))');
   final VerificationMeta _saturdayMeta = const VerificationMeta('saturday');
   @override
-  late final GeneratedColumn<bool?> saturday = GeneratedColumn<bool?>(
+  late final GeneratedColumn<bool> saturday = GeneratedColumn<bool>(
       'saturday', aliasedName, false,
-      type: const BoolType(),
+      type: DriftSqlType.bool,
       requiredDuringInsert: true,
       defaultConstraints: 'CHECK (saturday IN (0, 1))');
   final VerificationMeta _sundayMeta = const VerificationMeta('sunday');
   @override
-  late final GeneratedColumn<bool?> sunday = GeneratedColumn<bool?>(
+  late final GeneratedColumn<bool> sunday = GeneratedColumn<bool>(
       'sunday', aliasedName, false,
-      type: const BoolType(),
+      type: DriftSqlType.bool,
       requiredDuringInsert: true,
       defaultConstraints: 'CHECK (sunday IN (0, 1))');
   final VerificationMeta _start_dateMeta = const VerificationMeta('start_date');
   @override
-  late final GeneratedColumn<String?> start_date = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> start_date = GeneratedColumn<String>(
       'start_date', aliasedName, false,
-      type: const StringType(), requiredDuringInsert: true);
+      type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _end_dateMeta = const VerificationMeta('end_date');
   @override
-  late final GeneratedColumn<String?> end_date = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> end_date = GeneratedColumn<String>(
       'end_date', aliasedName, false,
-      type: const StringType(), requiredDuringInsert: true);
+      type: DriftSqlType.string, requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns => [
         service_id,
@@ -2408,8 +2386,29 @@ class $CalendarTable extends Calendar
   Set<GeneratedColumn> get $primaryKey => {service_id};
   @override
   CalendarData map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return CalendarData.fromData(data,
-        prefix: tablePrefix != null ? '$tablePrefix.' : null);
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CalendarData(
+      service_id: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}service_id'])!,
+      monday: attachedDatabase.options.types
+          .read(DriftSqlType.bool, data['${effectivePrefix}monday'])!,
+      tuesday: attachedDatabase.options.types
+          .read(DriftSqlType.bool, data['${effectivePrefix}tuesday'])!,
+      wednesday: attachedDatabase.options.types
+          .read(DriftSqlType.bool, data['${effectivePrefix}wednesday'])!,
+      thursday: attachedDatabase.options.types
+          .read(DriftSqlType.bool, data['${effectivePrefix}thursday'])!,
+      friday: attachedDatabase.options.types
+          .read(DriftSqlType.bool, data['${effectivePrefix}friday'])!,
+      saturday: attachedDatabase.options.types
+          .read(DriftSqlType.bool, data['${effectivePrefix}saturday'])!,
+      sunday: attachedDatabase.options.types
+          .read(DriftSqlType.bool, data['${effectivePrefix}sunday'])!,
+      start_date: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}start_date'])!,
+      end_date: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}end_date'])!,
+    );
   }
 
   @override
@@ -2429,7 +2428,7 @@ class Trip extends DataClass implements Insertable<Trip> {
   final String shape_id;
   final int? wheelchair_accessible;
   final int? bikes_allowed;
-  Trip(
+  const Trip(
       {required this.route_id,
       required this.service_id,
       required this.trip_id,
@@ -2440,31 +2439,6 @@ class Trip extends DataClass implements Insertable<Trip> {
       required this.shape_id,
       this.wheelchair_accessible,
       this.bikes_allowed});
-  factory Trip.fromData(Map<String, dynamic> data, {String? prefix}) {
-    final effectivePrefix = prefix ?? '';
-    return Trip(
-      route_id: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}route_id'])!,
-      service_id: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}service_id'])!,
-      trip_id: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}trip_id'])!,
-      trip_headsign: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}trip_headsign']),
-      trip_short_name: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}trip_short_name']),
-      direction_id: const IntType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}direction_id']),
-      block_id: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}block_id']),
-      shape_id: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}shape_id'])!,
-      wheelchair_accessible: const IntType().mapFromDatabaseResponse(
-          data['${effectivePrefix}wheelchair_accessible']),
-      bikes_allowed: const IntType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}bikes_allowed']),
-    );
-  }
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -2472,23 +2446,23 @@ class Trip extends DataClass implements Insertable<Trip> {
     map['service_id'] = Variable<String>(service_id);
     map['trip_id'] = Variable<String>(trip_id);
     if (!nullToAbsent || trip_headsign != null) {
-      map['trip_headsign'] = Variable<String?>(trip_headsign);
+      map['trip_headsign'] = Variable<String>(trip_headsign);
     }
     if (!nullToAbsent || trip_short_name != null) {
-      map['trip_short_name'] = Variable<String?>(trip_short_name);
+      map['trip_short_name'] = Variable<String>(trip_short_name);
     }
     if (!nullToAbsent || direction_id != null) {
-      map['direction_id'] = Variable<int?>(direction_id);
+      map['direction_id'] = Variable<int>(direction_id);
     }
     if (!nullToAbsent || block_id != null) {
-      map['block_id'] = Variable<String?>(block_id);
+      map['block_id'] = Variable<String>(block_id);
     }
     map['shape_id'] = Variable<String>(shape_id);
     if (!nullToAbsent || wheelchair_accessible != null) {
-      map['wheelchair_accessible'] = Variable<int?>(wheelchair_accessible);
+      map['wheelchair_accessible'] = Variable<int>(wheelchair_accessible);
     }
     if (!nullToAbsent || bikes_allowed != null) {
-      map['bikes_allowed'] = Variable<int?>(bikes_allowed);
+      map['bikes_allowed'] = Variable<int>(bikes_allowed);
     }
     return map;
   }
@@ -2558,25 +2532,31 @@ class Trip extends DataClass implements Insertable<Trip> {
           {String? route_id,
           String? service_id,
           String? trip_id,
-          String? trip_headsign,
-          String? trip_short_name,
-          int? direction_id,
-          String? block_id,
+          Value<String?> trip_headsign = const Value.absent(),
+          Value<String?> trip_short_name = const Value.absent(),
+          Value<int?> direction_id = const Value.absent(),
+          Value<String?> block_id = const Value.absent(),
           String? shape_id,
-          int? wheelchair_accessible,
-          int? bikes_allowed}) =>
+          Value<int?> wheelchair_accessible = const Value.absent(),
+          Value<int?> bikes_allowed = const Value.absent()}) =>
       Trip(
         route_id: route_id ?? this.route_id,
         service_id: service_id ?? this.service_id,
         trip_id: trip_id ?? this.trip_id,
-        trip_headsign: trip_headsign ?? this.trip_headsign,
-        trip_short_name: trip_short_name ?? this.trip_short_name,
-        direction_id: direction_id ?? this.direction_id,
-        block_id: block_id ?? this.block_id,
+        trip_headsign:
+            trip_headsign.present ? trip_headsign.value : this.trip_headsign,
+        trip_short_name: trip_short_name.present
+            ? trip_short_name.value
+            : this.trip_short_name,
+        direction_id:
+            direction_id.present ? direction_id.value : this.direction_id,
+        block_id: block_id.present ? block_id.value : this.block_id,
         shape_id: shape_id ?? this.shape_id,
-        wheelchair_accessible:
-            wheelchair_accessible ?? this.wheelchair_accessible,
-        bikes_allowed: bikes_allowed ?? this.bikes_allowed,
+        wheelchair_accessible: wheelchair_accessible.present
+            ? wheelchair_accessible.value
+            : this.wheelchair_accessible,
+        bikes_allowed:
+            bikes_allowed.present ? bikes_allowed.value : this.bikes_allowed,
       );
   @override
   String toString() {
@@ -2665,13 +2645,13 @@ class TripsCompanion extends UpdateCompanion<Trip> {
     Expression<String>? route_id,
     Expression<String>? service_id,
     Expression<String>? trip_id,
-    Expression<String?>? trip_headsign,
-    Expression<String?>? trip_short_name,
-    Expression<int?>? direction_id,
-    Expression<String?>? block_id,
+    Expression<String>? trip_headsign,
+    Expression<String>? trip_short_name,
+    Expression<int>? direction_id,
+    Expression<String>? block_id,
     Expression<String>? shape_id,
-    Expression<int?>? wheelchair_accessible,
-    Expression<int?>? bikes_allowed,
+    Expression<int>? wheelchair_accessible,
+    Expression<int>? bikes_allowed,
   }) {
     return RawValuesInsertable({
       if (route_id != null) 'route_id': route_id,
@@ -2727,26 +2707,25 @@ class TripsCompanion extends UpdateCompanion<Trip> {
       map['trip_id'] = Variable<String>(trip_id.value);
     }
     if (trip_headsign.present) {
-      map['trip_headsign'] = Variable<String?>(trip_headsign.value);
+      map['trip_headsign'] = Variable<String>(trip_headsign.value);
     }
     if (trip_short_name.present) {
-      map['trip_short_name'] = Variable<String?>(trip_short_name.value);
+      map['trip_short_name'] = Variable<String>(trip_short_name.value);
     }
     if (direction_id.present) {
-      map['direction_id'] = Variable<int?>(direction_id.value);
+      map['direction_id'] = Variable<int>(direction_id.value);
     }
     if (block_id.present) {
-      map['block_id'] = Variable<String?>(block_id.value);
+      map['block_id'] = Variable<String>(block_id.value);
     }
     if (shape_id.present) {
       map['shape_id'] = Variable<String>(shape_id.value);
     }
     if (wheelchair_accessible.present) {
-      map['wheelchair_accessible'] =
-          Variable<int?>(wheelchair_accessible.value);
+      map['wheelchair_accessible'] = Variable<int>(wheelchair_accessible.value);
     }
     if (bikes_allowed.present) {
-      map['bikes_allowed'] = Variable<int?>(bikes_allowed.value);
+      map['bikes_allowed'] = Variable<int>(bikes_allowed.value);
     }
     return map;
   }
@@ -2776,63 +2755,63 @@ class $TripsTable extends Trips with TableInfo<$TripsTable, Trip> {
   $TripsTable(this.attachedDatabase, [this._alias]);
   final VerificationMeta _route_idMeta = const VerificationMeta('route_id');
   @override
-  late final GeneratedColumn<String?> route_id = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> route_id = GeneratedColumn<String>(
       'route_id', aliasedName, false,
-      type: const StringType(),
+      type: DriftSqlType.string,
       requiredDuringInsert: true,
       defaultConstraints: 'REFERENCES transit_routes (route_id)');
   final VerificationMeta _service_idMeta = const VerificationMeta('service_id');
   @override
-  late final GeneratedColumn<String?> service_id = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> service_id = GeneratedColumn<String>(
       'service_id', aliasedName, false,
-      type: const StringType(),
+      type: DriftSqlType.string,
       requiredDuringInsert: true,
       defaultConstraints: 'REFERENCES calendar (service_id)');
   final VerificationMeta _trip_idMeta = const VerificationMeta('trip_id');
   @override
-  late final GeneratedColumn<String?> trip_id = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> trip_id = GeneratedColumn<String>(
       'trip_id', aliasedName, false,
-      type: const StringType(), requiredDuringInsert: true);
+      type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _trip_headsignMeta =
       const VerificationMeta('trip_headsign');
   @override
-  late final GeneratedColumn<String?> trip_headsign = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> trip_headsign = GeneratedColumn<String>(
       'trip_headsign', aliasedName, true,
-      type: const StringType(), requiredDuringInsert: false);
+      type: DriftSqlType.string, requiredDuringInsert: false);
   final VerificationMeta _trip_short_nameMeta =
       const VerificationMeta('trip_short_name');
   @override
-  late final GeneratedColumn<String?> trip_short_name =
-      GeneratedColumn<String?>('trip_short_name', aliasedName, true,
-          type: const StringType(), requiredDuringInsert: false);
+  late final GeneratedColumn<String> trip_short_name = GeneratedColumn<String>(
+      'trip_short_name', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   final VerificationMeta _direction_idMeta =
       const VerificationMeta('direction_id');
   @override
-  late final GeneratedColumn<int?> direction_id = GeneratedColumn<int?>(
+  late final GeneratedColumn<int> direction_id = GeneratedColumn<int>(
       'direction_id', aliasedName, true,
-      type: const IntType(), requiredDuringInsert: false);
+      type: DriftSqlType.int, requiredDuringInsert: false);
   final VerificationMeta _block_idMeta = const VerificationMeta('block_id');
   @override
-  late final GeneratedColumn<String?> block_id = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> block_id = GeneratedColumn<String>(
       'block_id', aliasedName, true,
-      type: const StringType(), requiredDuringInsert: false);
+      type: DriftSqlType.string, requiredDuringInsert: false);
   final VerificationMeta _shape_idMeta = const VerificationMeta('shape_id');
   @override
-  late final GeneratedColumn<String?> shape_id = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> shape_id = GeneratedColumn<String>(
       'shape_id', aliasedName, false,
-      type: const StringType(), requiredDuringInsert: true);
+      type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _wheelchair_accessibleMeta =
       const VerificationMeta('wheelchair_accessible');
   @override
-  late final GeneratedColumn<int?> wheelchair_accessible =
-      GeneratedColumn<int?>('wheelchair_accessible', aliasedName, true,
-          type: const IntType(), requiredDuringInsert: false);
+  late final GeneratedColumn<int> wheelchair_accessible = GeneratedColumn<int>(
+      'wheelchair_accessible', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
   final VerificationMeta _bikes_allowedMeta =
       const VerificationMeta('bikes_allowed');
   @override
-  late final GeneratedColumn<int?> bikes_allowed = GeneratedColumn<int?>(
+  late final GeneratedColumn<int> bikes_allowed = GeneratedColumn<int>(
       'bikes_allowed', aliasedName, true,
-      type: const IntType(), requiredDuringInsert: false);
+      type: DriftSqlType.int, requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns => [
         route_id,
@@ -2922,8 +2901,29 @@ class $TripsTable extends Trips with TableInfo<$TripsTable, Trip> {
   Set<GeneratedColumn> get $primaryKey => {trip_id};
   @override
   Trip map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return Trip.fromData(data,
-        prefix: tablePrefix != null ? '$tablePrefix.' : null);
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Trip(
+      route_id: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}route_id'])!,
+      service_id: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}service_id'])!,
+      trip_id: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}trip_id'])!,
+      trip_headsign: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}trip_headsign']),
+      trip_short_name: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}trip_short_name']),
+      direction_id: attachedDatabase.options.types
+          .read(DriftSqlType.int, data['${effectivePrefix}direction_id']),
+      block_id: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}block_id']),
+      shape_id: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}shape_id'])!,
+      wheelchair_accessible: attachedDatabase.options.types.read(
+          DriftSqlType.int, data['${effectivePrefix}wheelchair_accessible']),
+      bikes_allowed: attachedDatabase.options.types
+          .read(DriftSqlType.int, data['${effectivePrefix}bikes_allowed']),
+    );
   }
 
   @override
@@ -2945,7 +2945,7 @@ class StopTime extends DataClass implements Insertable<StopTime> {
   final int? continuous_drop_off;
   final double? shape_dist_traveled;
   final int? timepoint;
-  StopTime(
+  const StopTime(
       {required this.trip_id,
       required this.arrival_time,
       required this.departure_time,
@@ -2958,35 +2958,6 @@ class StopTime extends DataClass implements Insertable<StopTime> {
       this.continuous_drop_off,
       this.shape_dist_traveled,
       this.timepoint});
-  factory StopTime.fromData(Map<String, dynamic> data, {String? prefix}) {
-    final effectivePrefix = prefix ?? '';
-    return StopTime(
-      trip_id: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}trip_id'])!,
-      arrival_time: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}arrival_time'])!,
-      departure_time: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}departure_time'])!,
-      stop_id: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}stop_id'])!,
-      stop_sequence: const IntType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}stop_sequence'])!,
-      stop_headsign: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}stop_headsign']),
-      pickup_type: const IntType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}pickup_type']),
-      drop_off_type: const IntType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}drop_off_type']),
-      continuous_pickup: const IntType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}continuous_pickup']),
-      continuous_drop_off: const IntType().mapFromDatabaseResponse(
-          data['${effectivePrefix}continuous_drop_off']),
-      shape_dist_traveled: const RealType().mapFromDatabaseResponse(
-          data['${effectivePrefix}shape_dist_traveled']),
-      timepoint: const IntType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}timepoint']),
-    );
-  }
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -2996,25 +2967,25 @@ class StopTime extends DataClass implements Insertable<StopTime> {
     map['stop_id'] = Variable<String>(stop_id);
     map['stop_sequence'] = Variable<int>(stop_sequence);
     if (!nullToAbsent || stop_headsign != null) {
-      map['stop_headsign'] = Variable<String?>(stop_headsign);
+      map['stop_headsign'] = Variable<String>(stop_headsign);
     }
     if (!nullToAbsent || pickup_type != null) {
-      map['pickup_type'] = Variable<int?>(pickup_type);
+      map['pickup_type'] = Variable<int>(pickup_type);
     }
     if (!nullToAbsent || drop_off_type != null) {
-      map['drop_off_type'] = Variable<int?>(drop_off_type);
+      map['drop_off_type'] = Variable<int>(drop_off_type);
     }
     if (!nullToAbsent || continuous_pickup != null) {
-      map['continuous_pickup'] = Variable<int?>(continuous_pickup);
+      map['continuous_pickup'] = Variable<int>(continuous_pickup);
     }
     if (!nullToAbsent || continuous_drop_off != null) {
-      map['continuous_drop_off'] = Variable<int?>(continuous_drop_off);
+      map['continuous_drop_off'] = Variable<int>(continuous_drop_off);
     }
     if (!nullToAbsent || shape_dist_traveled != null) {
-      map['shape_dist_traveled'] = Variable<double?>(shape_dist_traveled);
+      map['shape_dist_traveled'] = Variable<double>(shape_dist_traveled);
     }
     if (!nullToAbsent || timepoint != null) {
-      map['timepoint'] = Variable<int?>(timepoint);
+      map['timepoint'] = Variable<int>(timepoint);
     }
     return map;
   }
@@ -3095,26 +3066,34 @@ class StopTime extends DataClass implements Insertable<StopTime> {
           String? departure_time,
           String? stop_id,
           int? stop_sequence,
-          String? stop_headsign,
-          int? pickup_type,
-          int? drop_off_type,
-          int? continuous_pickup,
-          int? continuous_drop_off,
-          double? shape_dist_traveled,
-          int? timepoint}) =>
+          Value<String?> stop_headsign = const Value.absent(),
+          Value<int?> pickup_type = const Value.absent(),
+          Value<int?> drop_off_type = const Value.absent(),
+          Value<int?> continuous_pickup = const Value.absent(),
+          Value<int?> continuous_drop_off = const Value.absent(),
+          Value<double?> shape_dist_traveled = const Value.absent(),
+          Value<int?> timepoint = const Value.absent()}) =>
       StopTime(
         trip_id: trip_id ?? this.trip_id,
         arrival_time: arrival_time ?? this.arrival_time,
         departure_time: departure_time ?? this.departure_time,
         stop_id: stop_id ?? this.stop_id,
         stop_sequence: stop_sequence ?? this.stop_sequence,
-        stop_headsign: stop_headsign ?? this.stop_headsign,
-        pickup_type: pickup_type ?? this.pickup_type,
-        drop_off_type: drop_off_type ?? this.drop_off_type,
-        continuous_pickup: continuous_pickup ?? this.continuous_pickup,
-        continuous_drop_off: continuous_drop_off ?? this.continuous_drop_off,
-        shape_dist_traveled: shape_dist_traveled ?? this.shape_dist_traveled,
-        timepoint: timepoint ?? this.timepoint,
+        stop_headsign:
+            stop_headsign.present ? stop_headsign.value : this.stop_headsign,
+        pickup_type: pickup_type.present ? pickup_type.value : this.pickup_type,
+        drop_off_type:
+            drop_off_type.present ? drop_off_type.value : this.drop_off_type,
+        continuous_pickup: continuous_pickup.present
+            ? continuous_pickup.value
+            : this.continuous_pickup,
+        continuous_drop_off: continuous_drop_off.present
+            ? continuous_drop_off.value
+            : this.continuous_drop_off,
+        shape_dist_traveled: shape_dist_traveled.present
+            ? shape_dist_traveled.value
+            : this.shape_dist_traveled,
+        timepoint: timepoint.present ? timepoint.value : this.timepoint,
       );
   @override
   String toString() {
@@ -3218,13 +3197,13 @@ class StopTimesCompanion extends UpdateCompanion<StopTime> {
     Expression<String>? departure_time,
     Expression<String>? stop_id,
     Expression<int>? stop_sequence,
-    Expression<String?>? stop_headsign,
-    Expression<int?>? pickup_type,
-    Expression<int?>? drop_off_type,
-    Expression<int?>? continuous_pickup,
-    Expression<int?>? continuous_drop_off,
-    Expression<double?>? shape_dist_traveled,
-    Expression<int?>? timepoint,
+    Expression<String>? stop_headsign,
+    Expression<int>? pickup_type,
+    Expression<int>? drop_off_type,
+    Expression<int>? continuous_pickup,
+    Expression<int>? continuous_drop_off,
+    Expression<double>? shape_dist_traveled,
+    Expression<int>? timepoint,
   }) {
     return RawValuesInsertable({
       if (trip_id != null) 'trip_id': trip_id,
@@ -3292,25 +3271,25 @@ class StopTimesCompanion extends UpdateCompanion<StopTime> {
       map['stop_sequence'] = Variable<int>(stop_sequence.value);
     }
     if (stop_headsign.present) {
-      map['stop_headsign'] = Variable<String?>(stop_headsign.value);
+      map['stop_headsign'] = Variable<String>(stop_headsign.value);
     }
     if (pickup_type.present) {
-      map['pickup_type'] = Variable<int?>(pickup_type.value);
+      map['pickup_type'] = Variable<int>(pickup_type.value);
     }
     if (drop_off_type.present) {
-      map['drop_off_type'] = Variable<int?>(drop_off_type.value);
+      map['drop_off_type'] = Variable<int>(drop_off_type.value);
     }
     if (continuous_pickup.present) {
-      map['continuous_pickup'] = Variable<int?>(continuous_pickup.value);
+      map['continuous_pickup'] = Variable<int>(continuous_pickup.value);
     }
     if (continuous_drop_off.present) {
-      map['continuous_drop_off'] = Variable<int?>(continuous_drop_off.value);
+      map['continuous_drop_off'] = Variable<int>(continuous_drop_off.value);
     }
     if (shape_dist_traveled.present) {
-      map['shape_dist_traveled'] = Variable<double?>(shape_dist_traveled.value);
+      map['shape_dist_traveled'] = Variable<double>(shape_dist_traveled.value);
     }
     if (timepoint.present) {
-      map['timepoint'] = Variable<int?>(timepoint.value);
+      map['timepoint'] = Variable<int>(timepoint.value);
     }
     return map;
   }
@@ -3343,77 +3322,77 @@ class $StopTimesTable extends StopTimes
   $StopTimesTable(this.attachedDatabase, [this._alias]);
   final VerificationMeta _trip_idMeta = const VerificationMeta('trip_id');
   @override
-  late final GeneratedColumn<String?> trip_id = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> trip_id = GeneratedColumn<String>(
       'trip_id', aliasedName, false,
-      type: const StringType(),
+      type: DriftSqlType.string,
       requiredDuringInsert: true,
       defaultConstraints: 'REFERENCES trips (trip_id)');
   final VerificationMeta _arrival_timeMeta =
       const VerificationMeta('arrival_time');
   @override
-  late final GeneratedColumn<String?> arrival_time = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> arrival_time = GeneratedColumn<String>(
       'arrival_time', aliasedName, false,
-      type: const StringType(), requiredDuringInsert: true);
+      type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _departure_timeMeta =
       const VerificationMeta('departure_time');
   @override
-  late final GeneratedColumn<String?> departure_time = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> departure_time = GeneratedColumn<String>(
       'departure_time', aliasedName, false,
-      type: const StringType(), requiredDuringInsert: true);
+      type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _stop_idMeta = const VerificationMeta('stop_id');
   @override
-  late final GeneratedColumn<String?> stop_id = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> stop_id = GeneratedColumn<String>(
       'stop_id', aliasedName, false,
-      type: const StringType(),
+      type: DriftSqlType.string,
       requiredDuringInsert: true,
       defaultConstraints: 'REFERENCES stops (stop_id)');
   final VerificationMeta _stop_sequenceMeta =
       const VerificationMeta('stop_sequence');
   @override
-  late final GeneratedColumn<int?> stop_sequence = GeneratedColumn<int?>(
+  late final GeneratedColumn<int> stop_sequence = GeneratedColumn<int>(
       'stop_sequence', aliasedName, false,
-      type: const IntType(), requiredDuringInsert: true);
+      type: DriftSqlType.int, requiredDuringInsert: true);
   final VerificationMeta _stop_headsignMeta =
       const VerificationMeta('stop_headsign');
   @override
-  late final GeneratedColumn<String?> stop_headsign = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> stop_headsign = GeneratedColumn<String>(
       'stop_headsign', aliasedName, true,
-      type: const StringType(), requiredDuringInsert: false);
+      type: DriftSqlType.string, requiredDuringInsert: false);
   final VerificationMeta _pickup_typeMeta =
       const VerificationMeta('pickup_type');
   @override
-  late final GeneratedColumn<int?> pickup_type = GeneratedColumn<int?>(
+  late final GeneratedColumn<int> pickup_type = GeneratedColumn<int>(
       'pickup_type', aliasedName, true,
-      type: const IntType(), requiredDuringInsert: false);
+      type: DriftSqlType.int, requiredDuringInsert: false);
   final VerificationMeta _drop_off_typeMeta =
       const VerificationMeta('drop_off_type');
   @override
-  late final GeneratedColumn<int?> drop_off_type = GeneratedColumn<int?>(
+  late final GeneratedColumn<int> drop_off_type = GeneratedColumn<int>(
       'drop_off_type', aliasedName, true,
-      type: const IntType(), requiredDuringInsert: false);
+      type: DriftSqlType.int, requiredDuringInsert: false);
   final VerificationMeta _continuous_pickupMeta =
       const VerificationMeta('continuous_pickup');
   @override
-  late final GeneratedColumn<int?> continuous_pickup = GeneratedColumn<int?>(
+  late final GeneratedColumn<int> continuous_pickup = GeneratedColumn<int>(
       'continuous_pickup', aliasedName, true,
-      type: const IntType(), requiredDuringInsert: false);
+      type: DriftSqlType.int, requiredDuringInsert: false);
   final VerificationMeta _continuous_drop_offMeta =
       const VerificationMeta('continuous_drop_off');
   @override
-  late final GeneratedColumn<int?> continuous_drop_off = GeneratedColumn<int?>(
+  late final GeneratedColumn<int> continuous_drop_off = GeneratedColumn<int>(
       'continuous_drop_off', aliasedName, true,
-      type: const IntType(), requiredDuringInsert: false);
+      type: DriftSqlType.int, requiredDuringInsert: false);
   final VerificationMeta _shape_dist_traveledMeta =
       const VerificationMeta('shape_dist_traveled');
   @override
-  late final GeneratedColumn<double?> shape_dist_traveled =
-      GeneratedColumn<double?>('shape_dist_traveled', aliasedName, true,
-          type: const RealType(), requiredDuringInsert: false);
+  late final GeneratedColumn<double> shape_dist_traveled =
+      GeneratedColumn<double>('shape_dist_traveled', aliasedName, true,
+          type: DriftSqlType.double, requiredDuringInsert: false);
   final VerificationMeta _timepointMeta = const VerificationMeta('timepoint');
   @override
-  late final GeneratedColumn<int?> timepoint = GeneratedColumn<int?>(
+  late final GeneratedColumn<int> timepoint = GeneratedColumn<int>(
       'timepoint', aliasedName, true,
-      type: const IntType(), requiredDuringInsert: false);
+      type: DriftSqlType.int, requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns => [
         trip_id,
@@ -3521,8 +3500,33 @@ class $StopTimesTable extends StopTimes
   Set<GeneratedColumn> get $primaryKey => {trip_id, stop_id, stop_sequence};
   @override
   StopTime map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return StopTime.fromData(data,
-        prefix: tablePrefix != null ? '$tablePrefix.' : null);
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return StopTime(
+      trip_id: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}trip_id'])!,
+      arrival_time: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}arrival_time'])!,
+      departure_time: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}departure_time'])!,
+      stop_id: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}stop_id'])!,
+      stop_sequence: attachedDatabase.options.types
+          .read(DriftSqlType.int, data['${effectivePrefix}stop_sequence'])!,
+      stop_headsign: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}stop_headsign']),
+      pickup_type: attachedDatabase.options.types
+          .read(DriftSqlType.int, data['${effectivePrefix}pickup_type']),
+      drop_off_type: attachedDatabase.options.types
+          .read(DriftSqlType.int, data['${effectivePrefix}drop_off_type']),
+      continuous_pickup: attachedDatabase.options.types
+          .read(DriftSqlType.int, data['${effectivePrefix}continuous_pickup']),
+      continuous_drop_off: attachedDatabase.options.types.read(
+          DriftSqlType.int, data['${effectivePrefix}continuous_drop_off']),
+      shape_dist_traveled: attachedDatabase.options.types.read(
+          DriftSqlType.double, data['${effectivePrefix}shape_dist_traveled']),
+      timepoint: attachedDatabase.options.types
+          .read(DriftSqlType.int, data['${effectivePrefix}timepoint']),
+    );
   }
 
   @override
@@ -3537,27 +3541,12 @@ class Shape extends DataClass implements Insertable<Shape> {
   final double shape_pt_lon;
   final int shape_pt_sequence;
   final double? shape_dist_traveled;
-  Shape(
+  const Shape(
       {required this.shape_id,
       required this.shape_pt_lat,
       required this.shape_pt_lon,
       required this.shape_pt_sequence,
       this.shape_dist_traveled});
-  factory Shape.fromData(Map<String, dynamic> data, {String? prefix}) {
-    final effectivePrefix = prefix ?? '';
-    return Shape(
-      shape_id: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}shape_id'])!,
-      shape_pt_lat: const RealType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}shape_pt_lat'])!,
-      shape_pt_lon: const RealType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}shape_pt_lon'])!,
-      shape_pt_sequence: const IntType().mapFromDatabaseResponse(
-          data['${effectivePrefix}shape_pt_sequence'])!,
-      shape_dist_traveled: const RealType().mapFromDatabaseResponse(
-          data['${effectivePrefix}shape_dist_traveled']),
-    );
-  }
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -3566,7 +3555,7 @@ class Shape extends DataClass implements Insertable<Shape> {
     map['shape_pt_lon'] = Variable<double>(shape_pt_lon);
     map['shape_pt_sequence'] = Variable<int>(shape_pt_sequence);
     if (!nullToAbsent || shape_dist_traveled != null) {
-      map['shape_dist_traveled'] = Variable<double?>(shape_dist_traveled);
+      map['shape_dist_traveled'] = Variable<double>(shape_dist_traveled);
     }
     return map;
   }
@@ -3612,13 +3601,15 @@ class Shape extends DataClass implements Insertable<Shape> {
           double? shape_pt_lat,
           double? shape_pt_lon,
           int? shape_pt_sequence,
-          double? shape_dist_traveled}) =>
+          Value<double?> shape_dist_traveled = const Value.absent()}) =>
       Shape(
         shape_id: shape_id ?? this.shape_id,
         shape_pt_lat: shape_pt_lat ?? this.shape_pt_lat,
         shape_pt_lon: shape_pt_lon ?? this.shape_pt_lon,
         shape_pt_sequence: shape_pt_sequence ?? this.shape_pt_sequence,
-        shape_dist_traveled: shape_dist_traveled ?? this.shape_dist_traveled,
+        shape_dist_traveled: shape_dist_traveled.present
+            ? shape_dist_traveled.value
+            : this.shape_dist_traveled,
       );
   @override
   String toString() {
@@ -3674,7 +3665,7 @@ class ShapesCompanion extends UpdateCompanion<Shape> {
     Expression<double>? shape_pt_lat,
     Expression<double>? shape_pt_lon,
     Expression<int>? shape_pt_sequence,
-    Expression<double?>? shape_dist_traveled,
+    Expression<double>? shape_dist_traveled,
   }) {
     return RawValuesInsertable({
       if (shape_id != null) 'shape_id': shape_id,
@@ -3717,7 +3708,7 @@ class ShapesCompanion extends UpdateCompanion<Shape> {
       map['shape_pt_sequence'] = Variable<int>(shape_pt_sequence.value);
     }
     if (shape_dist_traveled.present) {
-      map['shape_dist_traveled'] = Variable<double?>(shape_dist_traveled.value);
+      map['shape_dist_traveled'] = Variable<double>(shape_dist_traveled.value);
     }
     return map;
   }
@@ -3742,33 +3733,33 @@ class $ShapesTable extends Shapes with TableInfo<$ShapesTable, Shape> {
   $ShapesTable(this.attachedDatabase, [this._alias]);
   final VerificationMeta _shape_idMeta = const VerificationMeta('shape_id');
   @override
-  late final GeneratedColumn<String?> shape_id = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> shape_id = GeneratedColumn<String>(
       'shape_id', aliasedName, false,
-      type: const StringType(), requiredDuringInsert: true);
+      type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _shape_pt_latMeta =
       const VerificationMeta('shape_pt_lat');
   @override
-  late final GeneratedColumn<double?> shape_pt_lat = GeneratedColumn<double?>(
+  late final GeneratedColumn<double> shape_pt_lat = GeneratedColumn<double>(
       'shape_pt_lat', aliasedName, false,
-      type: const RealType(), requiredDuringInsert: true);
+      type: DriftSqlType.double, requiredDuringInsert: true);
   final VerificationMeta _shape_pt_lonMeta =
       const VerificationMeta('shape_pt_lon');
   @override
-  late final GeneratedColumn<double?> shape_pt_lon = GeneratedColumn<double?>(
+  late final GeneratedColumn<double> shape_pt_lon = GeneratedColumn<double>(
       'shape_pt_lon', aliasedName, false,
-      type: const RealType(), requiredDuringInsert: true);
+      type: DriftSqlType.double, requiredDuringInsert: true);
   final VerificationMeta _shape_pt_sequenceMeta =
       const VerificationMeta('shape_pt_sequence');
   @override
-  late final GeneratedColumn<int?> shape_pt_sequence = GeneratedColumn<int?>(
+  late final GeneratedColumn<int> shape_pt_sequence = GeneratedColumn<int>(
       'shape_pt_sequence', aliasedName, false,
-      type: const IntType(), requiredDuringInsert: true);
+      type: DriftSqlType.int, requiredDuringInsert: true);
   final VerificationMeta _shape_dist_traveledMeta =
       const VerificationMeta('shape_dist_traveled');
   @override
-  late final GeneratedColumn<double?> shape_dist_traveled =
-      GeneratedColumn<double?>('shape_dist_traveled', aliasedName, true,
-          type: const RealType(), requiredDuringInsert: false);
+  late final GeneratedColumn<double> shape_dist_traveled =
+      GeneratedColumn<double>('shape_dist_traveled', aliasedName, true,
+          type: DriftSqlType.double, requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns => [
         shape_id,
@@ -3829,8 +3820,19 @@ class $ShapesTable extends Shapes with TableInfo<$ShapesTable, Shape> {
   Set<GeneratedColumn> get $primaryKey => {shape_id, shape_pt_sequence};
   @override
   Shape map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return Shape.fromData(data,
-        prefix: tablePrefix != null ? '$tablePrefix.' : null);
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Shape(
+      shape_id: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}shape_id'])!,
+      shape_pt_lat: attachedDatabase.options.types
+          .read(DriftSqlType.double, data['${effectivePrefix}shape_pt_lat'])!,
+      shape_pt_lon: attachedDatabase.options.types
+          .read(DriftSqlType.double, data['${effectivePrefix}shape_pt_lon'])!,
+      shape_pt_sequence: attachedDatabase.options.types
+          .read(DriftSqlType.int, data['${effectivePrefix}shape_pt_sequence'])!,
+      shape_dist_traveled: attachedDatabase.options.types.read(
+          DriftSqlType.double, data['${effectivePrefix}shape_dist_traveled']),
+    );
   }
 
   @override
@@ -3843,21 +3845,10 @@ class CalendarDate extends DataClass implements Insertable<CalendarDate> {
   final String service_id;
   final String date;
   final int exception_type;
-  CalendarDate(
+  const CalendarDate(
       {required this.service_id,
       required this.date,
       required this.exception_type});
-  factory CalendarDate.fromData(Map<String, dynamic> data, {String? prefix}) {
-    final effectivePrefix = prefix ?? '';
-    return CalendarDate(
-      service_id: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}service_id'])!,
-      date: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}date'])!,
-      exception_type: const IntType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}exception_type'])!,
-    );
-  }
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -3995,22 +3986,22 @@ class $CalendarDatesTable extends CalendarDates
   $CalendarDatesTable(this.attachedDatabase, [this._alias]);
   final VerificationMeta _service_idMeta = const VerificationMeta('service_id');
   @override
-  late final GeneratedColumn<String?> service_id = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> service_id = GeneratedColumn<String>(
       'service_id', aliasedName, false,
-      type: const StringType(),
+      type: DriftSqlType.string,
       requiredDuringInsert: true,
       defaultConstraints: 'REFERENCES calendar (service_id)');
   final VerificationMeta _dateMeta = const VerificationMeta('date');
   @override
-  late final GeneratedColumn<String?> date = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> date = GeneratedColumn<String>(
       'date', aliasedName, false,
-      type: const StringType(), requiredDuringInsert: true);
+      type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _exception_typeMeta =
       const VerificationMeta('exception_type');
   @override
-  late final GeneratedColumn<int?> exception_type = GeneratedColumn<int?>(
+  late final GeneratedColumn<int> exception_type = GeneratedColumn<int>(
       'exception_type', aliasedName, false,
-      type: const IntType(), requiredDuringInsert: true);
+      type: DriftSqlType.int, requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns => [service_id, date, exception_type];
   @override
@@ -4051,8 +4042,15 @@ class $CalendarDatesTable extends CalendarDates
   Set<GeneratedColumn> get $primaryKey => {service_id, date};
   @override
   CalendarDate map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return CalendarDate.fromData(data,
-        prefix: tablePrefix != null ? '$tablePrefix.' : null);
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CalendarDate(
+      service_id: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}service_id'])!,
+      date: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}date'])!,
+      exception_type: attachedDatabase.options.types
+          .read(DriftSqlType.int, data['${effectivePrefix}exception_type'])!,
+    );
   }
 
   @override
@@ -4062,7 +4060,7 @@ class $CalendarDatesTable extends CalendarDates
 }
 
 abstract class _$AppDatabase extends GeneratedDatabase {
-  _$AppDatabase(QueryExecutor e) : super(SqlTypeSystem.defaultInstance, e);
+  _$AppDatabase(QueryExecutor e) : super(e);
   late final $FeedInfoTable feedInfo = $FeedInfoTable(this);
   late final $AgencyTable agency = $AgencyTable(this);
   late final $StopsTable stops = $StopsTable(this);
@@ -4073,7 +4071,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $ShapesTable shapes = $ShapesTable(this);
   late final $CalendarDatesTable calendarDates = $CalendarDatesTable(this);
   @override
-  Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
+  Iterable<TableInfo<Table, dynamic>> get allTables =>
+      allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
         feedInfo,
