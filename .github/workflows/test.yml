@@ -1,0 +1,42 @@
+name: Build and test
+
+on:
+  pull_request:
+  push:
+    branches:
+      - '**'
+    tags-ignore:
+      - '**'
+
+  workflow_dispatch:
+
+concurrency:
+  group: "test"
+  cancel-in-progress: true
+
+jobs:
+  build_web:
+    concurrency: ci-${{ github.ref }}
+    name: Build and test
+    runs-on: ubuntu-20.04
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - uses: dart-lang/setup-dart@v1.3
+
+      - run: dart --version
+
+      - name: Install dependencies
+        run: dart pub get
+
+      - run: dart format .
+
+      - name: Analyze project source
+        run: dart analyze
+
+      - name: Run tests
+        run: dart test
