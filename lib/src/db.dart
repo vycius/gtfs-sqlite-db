@@ -1,5 +1,7 @@
 import 'package:drift/drift.dart';
+import 'package:flutter/material.dart';
 import 'package:gtfs_db/src/tables.dart';
+import 'package:provider/provider.dart';
 
 part 'db.g.dart';
 
@@ -21,6 +23,13 @@ class AppDatabase extends _$AppDatabase {
 
   @override
   int get schemaVersion => 1;
+
+  static AppDatabase get(BuildContext context) {
+    return Provider.of<AppDatabase>(
+      context,
+      listen: false,
+    );
+  }
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
