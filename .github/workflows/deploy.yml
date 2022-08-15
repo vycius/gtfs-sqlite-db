@@ -27,10 +27,11 @@ jobs:
           fetch-depth: 0
 
       - run: mkdir -p assets/sqlite
+
       - run: cp db/${{matrix.region}}.sqlite assets/sqlite/db.sqlite
 
       - run: git add assets/sqlite/db.sqlite
-      - run: git commit --allow-empty -m "Update sqlite file" || true
+      - run: git commit --allow-empty -m "Update sqlite file"
 
       - name: Push changes
         uses: ad-m/github-push-action@master
