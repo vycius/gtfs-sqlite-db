@@ -92,6 +92,9 @@ class GTFSImportService {
     await _insertCalendarDates(archive, appDatabase);
     await _insertTrips(archive, appDatabase);
     await _insertStopTimes(archive, appDatabase);
+
+    await  appDatabase.customStatement('PRAGMA optimize;');
+    await  appDatabase.customStatement('VACUUM;');
   }
 
   Iterable<T> _mapFileRowsToInserts<T>(
