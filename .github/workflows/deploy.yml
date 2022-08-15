@@ -26,6 +26,7 @@ jobs:
         with:
           fetch-depth: 0
 
+      - run: mkdir -p assets/sqlite
       - run: cp db/${{matrix.region}}.sqlite assets/sqlite/db.sqlite
 
       - run: git add assets/sqlite/db.sqlite
