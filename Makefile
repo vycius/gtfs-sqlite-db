@@ -1,2 +1,2 @@
 generate:
-	flutter pub run build_runner build
+	dart pub run build_runner build

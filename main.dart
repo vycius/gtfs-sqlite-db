@@ -1,3 +1,4 @@
+
 import 'dart:io';
 
 import 'package:drift/native.dart';
@@ -10,25 +11,25 @@ void main() async {
       id: 'vilnius',
       name: 'Vilnius',
       gtfsFile: 'gtfs/vilnius.zip',
-      gtfsRealtimeUrl: 'https://www.stops.lt/vilnius/gtfs_realtime.pb',
+      gtfsRealtimeUrl: 'https://api.allorigins.win/raw?url=https://www.stops.lt/vilnius/gtfs_realtime.pb',
     ),
     _Region(
       id: 'kaunas',
       name: 'Kaunas',
       gtfsFile: 'gtfs/kaunas.zip',
-      gtfsRealtimeUrl: 'https://www.stops.lt/kaunas/gtfs_realtime_full.pb',
+      gtfsRealtimeUrl: 'https://api.allorigins.win/raw?url=https://www.stops.lt/kaunas/gtfs_realtime_full.pb',
     ),
     _Region(
       id: 'klaipeda',
       name: 'Klaipėda',
       gtfsFile: 'gtfs/klaipeda.zip',
-      gtfsRealtimeUrl: 'https://www.stops.lt/klaipeda/gtfs_realtime.pb',
+      gtfsRealtimeUrl: 'https://api.allorigins.win/raw?url=https://www.stops.lt/klaipeda/gtfs_realtime.pb',
     ),
     _Region(
       id: 'panevezys',
       name: 'Panevėžys',
       gtfsFile: 'gtfs/panevezys.zip',
-      gtfsRealtimeUrl: 'https://www.stops.lt/panevezys/gtfs_realtime.pb',
+      gtfsRealtimeUrl: 'https://api.allorigins.win/raw?url=https://www.stops.lt/panevezys/gtfs_realtime.pb',
     ),
     _Region(
       id: 'druskininkai',
