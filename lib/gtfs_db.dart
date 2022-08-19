@@ -4,4 +4,3 @@
 library gtfs_db;
 
 export 'src/db.dart';
-export 'package:drift/drift.dart';
