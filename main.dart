@@ -1,9 +1,11 @@
 
 import 'dart:io';
 
+import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
-import 'package:gtfs_db/src/gtfs_service.dart';
 import 'package:gtfs_db/gtfs_db.dart';
+
+import 'gtfs_import_service.dart';
 
 void main() async {
   final regions = [
